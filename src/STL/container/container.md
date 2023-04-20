@@ -2,10 +2,11 @@
 
 ## vector
 
-- 1 vector底层使用动态数组实现，其内存分配策略是每次申请一段比当前容量更大的内存空间，
-并将原数据复制到新空间中，因此会产生内存分配和复制数据的开销。
-为了避免频繁地分配内存，vector一般会预留一定的容量，即capacity()，
-当需要插入的元素数量大于当前容量时，才会重新分配内存空间。
+- 1 vector底层使用动态数组实现，其内存分配策略是每次申请一段比
+当前容量更大的内存空间，并将原数据复制到新空间中，因此会产生
+内存分配和复制数据的开销。为了避免频繁地分配内存，vector一般会
+预留一定的容量，即capacity()，当需要插入的元素数量大于当前容量时，
+才会重新分配内存空间。
 
 ```c++
 	std::vector<int> v;
@@ -37,3 +38,55 @@
 
 - 4 安全性：由于vector的内存分配策略，可能会导致在扩容时迭代器和指针失效，
 因此需要注意迭代器和指针的有效性。
+```c++
+	std::vector<int>::iterator it = v.begin() + 4;
+	std::cout << *it;
+	v.push_back(5);
+	// std::cout << *it; undefind!
+```
+- 5 无线程安全性：std::vector不是线程安全的，因为它的内部并没有实现
+对于并发操作的保护机制，即多个线程同时修改 vector 的同一部分可能会
+导致数据不一致或崩溃等问题。
+```c++
+	// vector无线程安全性
+	std::vector<int> tv;
+	tv.reserve(2000);
+	auto lam = [](std::vector<int>* v)
+	{
+		for (size_t i = 0; i < 1000; i++)
+		{
+			v->push_back(i);
+		}
+	};
+	std::thread t1(lam, &tv);
+	std::thread t2(lam, &tv);
+	t1.join();
+	t2.join();
+	std::cout << tv.size();
+	// less than 2000
+```
+解决方案：
+- 使用互斥锁（std::mutex）或其他同步机制保护 vector 的操作，
+确保同一时刻只有一个线程可以对其进行读写操作。
+```c++
+	// thread safe -> 1
+	tv.resize(0);
+	tv.shrink_to_fit();
+	tv.reserve(2000);
+	std::mutex mtx;
+	auto lam_mutex_safe = [](std::mutex* mtx, std::vector<int>* v)
+	{
+		for (size_t i = 0; i < 1000; i++)
+		{
+			mtx->lock();
+			v->push_back(i);
+			mtx->unlock();
+		}
+	};
+	std::thread t3(lam_mutex_safe, &mtx, &tv);
+	std::thread t4(lam_mutex_safe, &mtx, &tv);
+	t3.join();
+	t4.join();
+	std::cout << tv.size() << std::endl;
+	// 2000
+```
