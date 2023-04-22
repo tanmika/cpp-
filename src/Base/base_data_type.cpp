@@ -99,6 +99,33 @@ auto main() -> int
 	bool b_false_p = false + 1;
 	bool b_false_n = false - 1;
 	cout << b_true_p << " " << b_true_n << " " << b_false_p << " " << b_false_n << endl;
+	cout << endl;
 
+	// 复合数据类型
+	// 数组
+	int arr[10] = { 1,2,3,4,5,6,7,8,9,10 };
+	cout << "arr:" << arr << " &arr[0]:" << &arr[0] << " *arr:" << *arr << " *(arr + 1):" << *(arr + 1) << " arr[10] size:" << sizeof(arr) << endl;
+	// 指针
+	int *p = arr;
+	cout << "pointer of arr[10] size:" << sizeof(p) << "\np -> *p p:" << p << " *p:" << *p << " *(p + 1):" << *(p + 1) << endl;
+	int(*q)[] = &arr;
+	cout << "pointer of arr[10] size:" << sizeof(q) << "\nq -> (*q)[] q:" << q << " *q:" << *q << " **q:" << **q << " *(*q + 1):" << *(*q + 1) << endl;
+	// 引用
+	int &r = arr[0];
+	cout << "reference of arr[0] size:" << sizeof(r) << endl;
+	// 多维数组
+	int arr2[3][3] = {0};
+	for (size_t i = 0; i < 3; i++)
+	{
+		for (size_t j = 0; j < 3; j++)
+		{
+			arr2[i][j] = i * 3 + j;
+		}
+	}
+	cout << "arr[3][3] size:" << sizeof(arr2) << endl;
+	int(*p2)[3] = arr2;
+	cout << "pointer of arr[3][3] size:" << sizeof(p2) << endl;
+	cout << "p -> (*p)[3] p:" << p2 << " *p:" << *p2 << " *(p + 1):" << *(p2 + 1) << " *(*p + 1):" << *(*p2 + 1) 
+		<< " *((*p + 1) + 1):" << *((*p2 + 1) + 1) << " *(*(p + 1) + 1):" <<*(*(p2 + 1) + 1)<< endl;
 	return 0;
 }
