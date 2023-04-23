@@ -91,7 +91,7 @@ auto main() -> int
 
 	// 布尔类型
 	bool b = true;
-	cout << sizeof(bool)<<endl;
+	cout << sizeof(bool) << endl;
 	cout << b << endl;
 	// 字面量
 	bool b_true_p = true + 1;
@@ -106,15 +106,63 @@ auto main() -> int
 	int arr[10] = { 1,2,3,4,5,6,7,8,9,10 };
 	cout << "arr:" << arr << " &arr[0]:" << &arr[0] << " *arr:" << *arr << " *(arr + 1):" << *(arr + 1) << " arr[10] size:" << sizeof(arr) << endl;
 	// 指针
-	int *p = arr;
+	int* p = arr;
 	cout << "pointer of arr[10] size:" << sizeof(p) << "\np -> *p p:" << p << " *p:" << *p << " *(p + 1):" << *(p + 1) << endl;
 	int(*q)[] = &arr;
 	cout << "pointer of arr[10] size:" << sizeof(q) << "\nq -> (*q)[] q:" << q << " *q:" << *q << " **q:" << **q << " *(*q + 1):" << *(*q + 1) << endl;
 	// 引用
-	int &r = arr[0];
+	int& r = arr[0];
 	cout << "reference of arr[0] size:" << sizeof(r) << endl;
+
 	// 多维数组
-	int arr2[3][3] = {0};
+	// int** 风格
+	int** p2_0;
+	p2_0 = new int* [3];
+	for (int i = 0; i < 3; i++)
+	{
+		p2_0[i] = new int[3];
+	}
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			p2_0[i][j] = i * 3 + j;
+		}
+	}
+	for (int i = 0; i < 3; i++)
+	{
+		delete[] p2_0[i];
+	}
+	delete[] p2_0;
+	// int*[] 风格
+	int* p2_1[3];
+	for (int i = 0; i < 3; i++)
+	{
+		p2_1[i] = new int[3];
+	}
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			p2_1[i][j] = i * 3 + j;
+		}
+	}
+	for (int i = 0; i < 3; i++)
+	{
+		delete[] p2_1[i];
+	}
+	// int(*)[] 风格
+	int (*p2_2)[3] = new int[3][3];
+	for (size_t i = 0; i < 3; i++)
+	{
+		for (size_t j = 0; j < 3; j++)
+		{
+			p2_2[i][j] = i * 3 + j;
+		}
+	}
+	delete[] p2_2;
+
+	int arr2[3][3] = { 0 };
 	for (size_t i = 0; i < 3; i++)
 	{
 		for (size_t j = 0; j < 3; j++)
@@ -125,7 +173,20 @@ auto main() -> int
 	cout << "arr[3][3] size:" << sizeof(arr2) << endl;
 	int(*p2)[3] = arr2;
 	cout << "pointer of arr[3][3] size:" << sizeof(p2) << endl;
-	cout << "p -> (*p)[3] p:" << p2 << " *p:" << *p2 << " *(p + 1):" << *(p2 + 1) << " *(*p + 1):" << *(*p2 + 1) 
-		<< " *((*p + 1) + 1):" << *((*p2 + 1) + 1) << " *(*(p + 1) + 1):" <<*(*(p2 + 1) + 1)<< endl;
+	cout << "p -> (*p)[3] p:" << p2 << " *p:" << *p2 << " *(p + 1):" << *(p2 + 1) << " *(*p + 1):" << *(*p2 + 1)
+		<< " *((*p + 1) + 1):" << *((*p2 + 1) + 1) << " *(*(p + 1) + 1):" << *(*(p2 + 1) + 1) << endl;
+	cout << endl;
+
+	// 字符串
+	char charray[8] = { 'g','r','e','a','t','d','a','y'};	// 字符数组
+	char string0[8] = { 'h','o','l','i','d','a','y','\0' };	// 字符串
+	char string1[] = "enjoy!!";								// 自带\0，实际长度8
+	cout << "ch array print ins:" << charray << " print div:";
+	for (auto ch :charray)
+	{
+		cout << ch;
+	}
+	cout << " type:" << typeid(charray).name() << " size:" << sizeof(charray) << endl;
+	cout << "string:" << string1 << " type:" << typeid(string1).name() << " size:" << sizeof(string1) << endl;
 	return 0;
 }
